@@ -1,7 +1,7 @@
 const BUTTON_SIZE = 70;
 const CALCULATOR_WIDTH = 450;
 const CALCULATOR_HEIGHT = 510;
-const DISPLAY_WIDTH = 320;
+const DISPLAY_WIDTH = 375;
 const DISPLAY_HEIGHT = 35;
 
 function add(num1, num2) {
