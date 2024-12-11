@@ -1,5 +1,6 @@
-const BUTTON_SIZE = 100;
-const CALCULATOR_SIZE = 410;
+const BUTTON_SIZE = 70;
+const CALCULATOR_WIDTH = 450;
+const CALCULATOR_HEIGHT = 510;
 const DISPLAY_WIDTH = 320;
 const DISPLAY_HEIGHT = 35;
 
@@ -33,34 +34,44 @@ function operate(operator, num1, num2) {
     }
 }
 
-function display(){
-
-}
 function createButton(num) {
     const button = document.createElement("div");
+    button.style.width = BUTTON_SIZE + 'px';
+    button.style.height = BUTTON_SIZE + 'px';
     button.textContent = num;
-    button.addEventListener("click", num=>display(num));
+    button.classList.add("button");
+    button.textContent = num;
+    return button;
+}
+
+function createDisplay() {
+    const display = document.querySelector("#display");
+    display.style.width = DISPLAY_WIDTH + 'px';
+    display.style.height = DISPLAY_HEIGHT + 'px';
+    display.textContent = 1234;
+    return display;
 }
 
 
 function createCalculator() {
     const calculator = document.querySelector("#calculator");
-    calculator.style.width = CALCULATOR_SIZE + 'px';
-    calculator.style.height = CALCULATOR_SIZE + 'px';
+    calculator.style.width = CALCULATOR_WIDTH + 'px';
+    calculator.style.height = CALCULATOR_HEIGHT + 'px';
 
-    const display = document.querySelector("#display");
-    display.style.width = DISPLAY_WIDTH + 'px';
-    display.style.height = DISPLAY_HEIGHT + 'px';
-    display.textContent = 1234;
+    const buttonRows = [[7, 8, 9, '/'],
+        [4, 5, 6, '*'],
+        [1, 2, 3, '-'],
+        [0, '.', '=']];
 
-    /*const buttons = document.querySelector("#buttons");
-    let row = 0; col = 0, currentButton = 0;
-    for (row; row < 3; row++) {
-        for (col; col < 3; col++) {
-            let button = createButton(currentButton);
-            currentButton += 1;
-        }
-    }*/
+    createDisplay();
+
+    const buttons = document.querySelector("#buttons");
+
+    const button = createButton("clear");
+    buttons.appendChild(button);
+    buttonRows.map(row => 
+        (row.map(button => createButton(button)))
+        .map(button => buttons.appendChild(button)));
 }
 
-createCalculator();
+createCalculator();    
