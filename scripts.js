@@ -1,7 +1,7 @@
 const BUTTON_SIZE = 70;
-const CALCULATOR_WIDTH = 450;
-const CALCULATOR_HEIGHT = 650;
-const DISPLAY_WIDTH = 350;
+const CALCULATOR_WIDTH = 390;
+const CALCULATOR_HEIGHT = 550;
+const DISPLAY_WIDTH = 310;
 const DISPLAY_HEIGHT = 35;
 
 let displayValues = [];
@@ -56,7 +56,7 @@ function createDisplay() {
     const display = document.querySelector("#display");
     display.style.width = DISPLAY_WIDTH + 'px';
     display.style.height = DISPLAY_HEIGHT + 'px';
-    display.textContent = 1234;
+    display.textContent = '';
     return display;
 }
 
@@ -82,35 +82,58 @@ function createCalculator() {
     return;
 }
 
+let op1 = '', 
+op2 = '', 
+prevOperator = '', 
+currentOperator = '';
+let decimal = 0;
+
 function updateDisplay(button) {
     let buttonValue = parseInt(button);
+    let result = 0;
     switch (Number.isInteger(buttonValue)) {
         case (true):
-            currentValue = (currentValue * 10) + buttonValue;
+            console.log(`true currentVal: ${currentValue}`);
+            decimal ? (currentValue = (buttonValue / 10) + currentValue, 
+            decimal = 0)
+            : (currentValue = (currentValue * 10) + buttonValue);
+            console.log(`currentVal: ${currentValue}`);
             display.textContent = currentValue;
+            console.log(displayValues);
             break;
-        case (false):
+        case (false): 
             if (button == "clear") {
                 display.textContent = "";
                 displayValues = [];
                 currentValue = 0;
             }
-            else if (button == '=') {
-                displayValues.push(currentValue);
-                let i = 0;
-                let result = displayValues[0];
-                console.log(displayValues);
-                while (i+2 < displayValues.length) {
-                    result = operate(result, displayValues[i+=1], displayValues[i+=1]);
-                }
-                display.textContent = result;
-                displayValues = [];
-                currentValue = 0;
-            }
             else {
-                displayValues.push(currentValue);
-                displayValues.push(button);
-                currentValue = 0;    
+                if (button == '.') {
+                    decimal = 1;
+                    display.textContent = currentValue + '.';
+                }
+                else {
+                    displayValues.push(currentValue);
+                    displayValues.push(button);
+                    if (displayValues.length == 4) {
+                        op1 = displayValues[0];
+                        prevOperator = displayValues[1];
+                        op2 = displayValues[2];
+                        currentOperator = displayValues[3];
+                        result = operate(op1, prevOperator, op2);
+                        console.log(displayValues);
+                        displayValues[0] = result;
+                        displayValues[1] = currentOperator;
+                        displayValues.pop();
+                        displayValues.pop();
+                        console.log(displayValues);
+                        result.toString().length < 9 ? display.textContent = result 
+                        : display.textContent = result.toPrecision(9);
+                    }
+                    button == '=' ? (displayValues.pop(), displayValues.pop(), currentValue = result) 
+                    : currentValue = 0;   
+                    console.log(displayValues);
+                }   
             }
     }
 }
