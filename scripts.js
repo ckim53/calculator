@@ -87,6 +87,7 @@ op2 = '',
 prevOperator = '', 
 currentOperator = '';
 let decimal = 0;
+let evaluated = false;
 
 function updateDisplay(button) {
     let buttonValue = parseInt(button);
@@ -106,6 +107,7 @@ function updateDisplay(button) {
                 display.textContent = "";
                 displayValues = [];
                 currentValue = 0;
+                evaluated = false;
             }
             else {
                 if (button == '.') {
@@ -121,6 +123,7 @@ function updateDisplay(button) {
                         op2 = displayValues[2];
                         currentOperator = displayValues[3];
                         result = operate(op1, prevOperator, op2);
+                        evaluated = true;
                         console.log(displayValues);
                         displayValues[0] = result;
                         displayValues[1] = currentOperator;
@@ -130,8 +133,11 @@ function updateDisplay(button) {
                         result.toString().length < 9 ? display.textContent = result 
                         : display.textContent = result.toPrecision(9);
                     }
-                    button == '=' ? (displayValues.pop(), displayValues.pop(), currentValue = result) 
+                    button == '=' ? (evaluated ? (displayValues.pop(), displayValues.pop(), 
+                    currentValue = result) : (displayValues.pop(), displayValues.pop(), evaluated = false)) 
                     : currentValue = 0;   
+                    console.log(`evaluated: ${evaluated}`);
+
                     console.log(displayValues);
                 }   
             }
