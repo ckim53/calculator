@@ -22,7 +22,8 @@ function multiply(num1, num2) {
 }
 
 function divide(num1, num2) {
-    return num1 / num2;
+    return num2 == 0 ? (display.textContent = "Naur", null)
+    : num1 / num2;
 }
 
 function operate(num1, operator, num2) {
@@ -82,25 +83,22 @@ function createCalculator() {
     return;
 }
 
-let op1 = '', 
-op2 = '', 
-prevOperator = '', 
-currentOperator = '';
-let decimal = 0;
-let evaluated = false;
-
 function updateDisplay(button) {
+    let op1 = '', 
+    op2 = '', 
+    prevOperator = '', 
+    currentOperator = '';
+    let decimal = 0;
+    let evaluated = false;
+
     let buttonValue = parseInt(button);
     let result = 0;
     switch (Number.isInteger(buttonValue)) {
         case (true):
-            console.log(`true currentVal: ${currentValue}`);
-            decimal ? (currentValue = (buttonValue / 10) + currentValue, 
-            decimal = 0)
+            decimal != 0 ? (currentValue = (buttonValue / 10 ** decimal) + currentValue,
+            decimal += 1)
             : (currentValue = (currentValue * 10) + buttonValue);
-            console.log(`currentVal: ${currentValue}`);
             display.textContent = currentValue;
-            console.log(displayValues);
             break;
         case (false): 
             if (button == "clear") {
@@ -109,40 +107,53 @@ function updateDisplay(button) {
                 currentValue = 0;
                 evaluated = false;
             }
-            else {
-                if (button == '.') {
+            else if (button == '.') {
                     decimal = 1;
                     display.textContent = currentValue + '.';
+            }
+            else {
+                if (decimal != 0) {
+                    decimal = 0;
                 }
-                else {
-                    displayValues.push(currentValue);
-                    displayValues.push(button);
-                    if (displayValues.length == 4) {
-                        op1 = displayValues[0];
-                        prevOperator = displayValues[1];
-                        op2 = displayValues[2];
-                        currentOperator = displayValues[3];
-                        result = operate(op1, prevOperator, op2);
-                        evaluated = true;
-                        console.log(displayValues);
-                        displayValues[0] = result;
-                        displayValues[1] = currentOperator;
-                        displayValues.pop();
-                        displayValues.pop();
-                        console.log(displayValues);
-                        result.toString().length < 9 ? display.textContent = result 
-                        : display.textContent = result.toPrecision(9);
-                    }
-                    button == '=' ? (evaluated ? (displayValues.pop(), displayValues.pop(), 
-                    currentValue = result) : (displayValues.pop(), displayValues.pop(), evaluated = false)) 
-                    : currentValue = 0;   
-                    console.log(`evaluated: ${evaluated}`);
+                displayValues.push(currentValue);
+                displayValues.push(button);
+                console.log(displayValues);
+                if (displayValues.length == 4) {
+                    op1 = displayValues[0];
+                    prevOperator = displayValues[1];
+                    op2 = displayValues[2];
+                    currentOperator = displayValues[3];
 
-                    console.log(displayValues);
-                }   
+                    result = operate(op1, prevOperator, op2);
+              
+                    if (result != null) {
+                        evaluated = true;
+                        currentOperator == '=' ?
+                            (displayValues[0] = result,
+                            evaluated = false,
+                            displayValues.splice(1, 3),
+                            currentValue = result)
+                        : (displayValues[0] = result,
+                            displayValues[1] = currentOperator,
+                            displayValues.pop(),
+                            displayValues.pop());
+                        result.toString().length < 9 ? display.textContent = result
+                            : display.textContent = result.toPrecision(9);
+                        console.log(displayValues);
+                    }
+                    else {
+                        displayValues.pop();
+                        displayValues.pop();
+                    }
+                }    
+                button == '=' ? (evaluated ? (displayValues.pop(), displayValues.pop(), 
+                currentValue = result) : (displayValues.pop(), displayValues.pop(), 
+                evaluated = false)) 
+                : currentValue = 0;   
             }
     }
 }
+
 
 createCalculator();    
 const display = createDisplay();
