@@ -50,6 +50,12 @@ function createButton(value) {
     button.addEventListener("click", function () {
         updateDisplay(value);
     });
+    button.addEventListener("mousedown", function () {
+        button.style.backgroundColor = "lightBlue";
+    });
+    button.addEventListener("mouseup", function () {
+        button.style.backgroundColor = "";
+    });
     return button;
 }
 
@@ -83,20 +89,19 @@ function createCalculator() {
     return;
 }
 
-function updateDisplay(button) {
-    let op1 = '', 
-    op2 = '', 
-    prevOperator = '', 
-    currentOperator = '';
-    let decimal = 0;
-    let evaluated = false;
+let op1 = '', op2 = '', 
+prevOperator = '', 
+currentOperator = '',
+decimal = 0,
+evaluated = false,
+result = 0;
 
+function updateDisplay(button) {
     let buttonValue = parseInt(button);
-    let result = 0;
     switch (Number.isInteger(buttonValue)) {
         case (true):
-            decimal != 0 ? (currentValue = (buttonValue / 10 ** decimal) + currentValue,
-            decimal += 1)
+            decimal != 0 ? 
+            (currentValue = (buttonValue / (10 ** decimal)) + currentValue, decimal += 1)
             : (currentValue = (currentValue * 10) + buttonValue);
             display.textContent = currentValue;
             break;
@@ -108,22 +113,19 @@ function updateDisplay(button) {
                 evaluated = false;
             }
             else if (button == '.') {
-                    decimal = 1;
-                    display.textContent = currentValue + '.';
+                decimal = 1;
+                display.textContent = currentValue + '.';
             }
             else {
-                if (decimal != 0) {
-                    decimal = 0;
-                }
+                decimal != 0 ? decimal = 0 : decimal;
                 displayValues.push(currentValue);
                 displayValues.push(button);
-                console.log(displayValues);
+
                 if (displayValues.length == 4) {
                     op1 = displayValues[0];
-                    prevOperator = displayValues[1];
                     op2 = displayValues[2];
+                    prevOperator = displayValues[1];
                     currentOperator = displayValues[3];
-
                     result = operate(op1, prevOperator, op2);
               
                     if (result != null) {
@@ -137,18 +139,20 @@ function updateDisplay(button) {
                             displayValues[1] = currentOperator,
                             displayValues.pop(),
                             displayValues.pop());
-                        result.toString().length < 9 ? display.textContent = result
-                            : display.textContent = result.toPrecision(9);
-                        console.log(displayValues);
+                        result.toString().length < 9 ? 
+                        display.textContent = result
+                        : display.textContent = result.toPrecision(9);
                     }
                     else {
                         displayValues.pop();
                         displayValues.pop();
                     }
                 }    
-                button == '=' ? (evaluated ? (displayValues.pop(), displayValues.pop(), 
-                currentValue = result) : (displayValues.pop(), displayValues.pop(), 
-                evaluated = false)) 
+                button == '=' ? 
+                    (evaluated ? (displayValues.pop(), displayValues.pop(), 
+                    currentValue = result) : 
+                    (displayValues.pop(), displayValues.pop(), 
+                    evaluated = false)) 
                 : currentValue = 0;   
             }
     }
